@@ -1,0 +1,95 @@
+let operation = "+";
+let resultat = 0;
+let score = 0;
+let nombre1 = 0;
+let nombre2 = 0;
+let correctionEnCours = false;
+
+// اختيار العملية
+function jouer(op) {
+    operation = op;
+    nouvelleQuestion();
+}
+
+// إنشاء سؤال جديد
+function nouvelleQuestion() {
+    correctionEnCours = false;
+
+    nombre1 = Math.floor(Math.random() * 10) + 1;
+    nombre2 = Math.floor(Math.random() * 10) + 1;
+
+    if (operation === "+") {
+        resultat = nombre1 + nombre2;
+    }
+
+    else if (operation === "-") {
+        if (nombre1 < nombre2) {
+            [nombre1, nombre2] = [nombre2, nombre1];
+        }
+        resultat = nombre1 - nombre2;
+    }
+
+    else if (operation === "*") {
+        resultat = nombre1 * nombre2;
+    }
+
+    else if (operation === "/") {
+        nombre2 = Math.floor(Math.random() * 9) + 1;
+        nombre1 = nombre1 * nombre2;
+        resultat = nombre1 / nombre2;
+    }
+
+    document.getElementById("jeu").innerHTML = `
+        <h2>Résous le calcul !</h2>
+
+        <h1>${nombre1} ${operation} ${nombre2} = ?</h1>
+
+        <input type="number" id="reponse"
+        placeholder="Ta réponse"
+        style="padding:12px; width:150px;
+        font-size:20px; border-radius:10px;">
+
+        <br><br>
+
+        <button onclick="verifier()">Vérifier</button>
+
+        <p id="message"></p>
+
+        <p>⭐ Score : ${score}</p>
+    `;
+}
+
+// Vérifier la réponse
+function verifier() {
+
+    if (correctionEnCours) return;
+
+    let reponse = document.getElementById("reponse").value;
+    let message = document.getElementById("message");
+
+    if (reponse === "") {
+        message.innerHTML = "Écris ta réponse !";
+        return;
+    }
+
+    if (Number(reponse) === resultat) {
+
+        correctionEnCours = true;
+        score++;
+
+        message.innerHTML = "🎉 Bravo ! Bonne réponse !";
+        message.style.color = "green";
+
+        document.querySelector("#jeu p:last-child").innerHTML =
+            "⭐ Score : " + score;
+
+        setTimeout(() => {
+            nouvelleQuestion();
+        }, 2500);
+
+    } else {
+
+        message.innerHTML = "❌ Essaie encore !";
+        message.style.color = "red";
+    }
+}
